@@ -1,8 +1,15 @@
+import 'package:call_observer/call_state.dart';
+import 'package:flutter/services.dart';
 
-import 'call_observer_platform_interface.dart';
+const _eventChannelName = 'platform_channel_events/call_observer';
 
 class CallObserver {
-  Future<String?> getPlatformVersion() {
-    return CallObserverPlatform.instance.getPlatformVersion();
+  static const _eventChannel = EventChannel(_eventChannelName);
+
+  static Stream<CallState> get callStateStream {
+    return _eventChannel
+        .receiveBroadcastStream()
+        .distinct()
+        .map((dynamic event) => CallState.fromMap(event));
   }
 }
